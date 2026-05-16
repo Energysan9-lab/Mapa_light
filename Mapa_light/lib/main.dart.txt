@@ -1,0 +1,66 @@
+import 'dart:async';
+import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
+
+void main() {
+  runApp(const MapaLight());
+}
+
+class MapaLight extends StatefulWidget {
+  const MapaLight({super.key});
+
+  @override
+  State<MapaLight> createState() => _MapaLightState();
+}
+
+class _MapaLightState extends State<MapaLight> {
+  bool alert = false;
+
+  @override
+  void initState() {
+    super.initState();
+
+    Timer.periodic(const Duration(seconds: 3), (_) {
+      fetchData();
+    });
+  }
+
+  Future<void> fetchData() async {
+    try {
+      final res = await http.get(
+        Uri.parse("https://api.alerts.in.ua/v1/alerts/active.json"),
+      );
+
+      setState(() {
+        alert = res.body.contains("alert");
+      });
+    } catch (_) {}
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      debugShowCheckedModeBanner: false,
+      home: Scaffold(
+        backgroundColor: Colors.black,
+        body: Center(
+          child: Container(
+            width: 200,
+            height: 200,
+            decoration: BoxDecoration(
+              color: alert ? Colors.red : Colors.green,
+              borderRadius: BorderRadius.circular(20),
+            ),
+            child: Center(
+              child: Text(
+                alert ? "ALERT" : "SAFE",
+                style: const TextStyle(color: Colors.white, fontSize: 24),
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
