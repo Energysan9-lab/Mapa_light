@@ -1,4 +1,4 @@
-name: Build Mapa Light APK
+name: Build APK
 
 on:
   push:
@@ -9,8 +9,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
       - name: Setup Java
         uses: actions/setup-java@v4
@@ -21,16 +20,19 @@ jobs:
       - name: Setup Flutter
         uses: subosito/flutter-action@v2
         with:
-          flutter-version: 3.19.0
+          flutter-version: stable
 
-      - name: Install dependencies
+      - name: Enable Flutter
+        run: flutter --version
+
+      - name: Get dependencies
         run: flutter pub get
 
       - name: Build APK
-        run: flutter build apk --release
+        run: flutter build apk --debug
 
       - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
-          name: mapa-light-apk
-          path: build/app/outputs/flutter-apk/app-release.apk
+          name: mapa-light
+          path: build/app/outputs/flutter-apk/app-debug.apk
