@@ -1,1 +1,0 @@
-This repo will be converted to Flutter project via GitHub Actions bootstrap.
